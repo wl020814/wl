@@ -9,14 +9,14 @@ int g_miGong[Row][Column] = {0};
 struct Pos {
     int x;
     int y;
-}
+};
 
 struct Stack {
-    Pos pos;
-    Stack *stack;
-}
+    struct Pos pos;
+    struct Stack *stack;
+};
 
-void PushStack(Pos pos)
+void PushStack(struct Pos pos)
 {
 
 }
