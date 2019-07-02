@@ -4,15 +4,25 @@
 int ismatch(char *s, char *p)
 {
     int i = 0, j = 0, tmp = 0;
+    char regex = 0;
     if ((s == NULL) || (p == NULL)) {
         return 0;
     }
 
     while (p[j] != '\0') {
+        if (p[j] == '*') {
+            if(regex == s[i]) {
+                i++;
+            } else {
+                j++;
+            }
+        }
+
         while (s[i] != '\0') {
-            if (s[i] == p[j]) {
+            if ((s[i] == p[j]) || (p[j] == '.')) {
                 i++;
                 j++;
+                regex = p[j];
             } else {
                 i = 0;
                 j = tmp++;
@@ -25,8 +35,8 @@ int ismatch(char *s, char *p)
     return 0;
 }
 
-char *s = "abc";
-char *p = "ababddddabcdabc";
+char *s = "abbbbbbc";
+char *p = "ababdsddd.b*cddbc";
 
 int main(void)
 {
