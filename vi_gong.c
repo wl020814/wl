@@ -4,12 +4,12 @@
 #define Row 6
 #define Column 6
 
-int g_miGong[Row][Column] = {0, 0, 1, 0, 1, 0,
-                             1, 1, 1, 0, 1, 0,
-                             0, 0, 1, 0, 0, 1,
-                             0, 0, 1, 0, 0, 1,
-                             0, 0, 1, 0, 0, 1,
-                             0, 0, 1, 0, 0, 1,
+int g_miGong[Row][Column] = {0, 0, 0, 0, 1, 0,
+                             1, 1, 1, 0, 1, 1,
+                             1, 0, 1, 0, 0, 1,
+                             1, 0, 1, 1, 1, 1,
+                             1, 1, 0, 0, 0, 0,
+                             0, 1, 0, 0, 0, 1,
 };
 
 struct Pos {
@@ -80,30 +80,39 @@ void DrawTheMap(void)
     }
 }
 
-void FinNextPath(struct Stack *s, int *i, int *j);
-void FinNextPath(struct Stack *s, int *i, int *j)
+int g_findPath = 0;
+
+void FindNextPath(struct Stack *s, int *i, int *j)
 {
+    int tmp;
+    if (g_findPath == 1)
+        return;
     if (*i == (Row - 1)) {
         printf("the result of map is:\n");
         DrawTheMap();
+        g_findPath = 1;
         return;
     }
 
-    if (g_miGong[*i - 1][*j] == 1) {
-        PushStack(s, (*i - 1), *j);
-        FindNextPath(s, (*i - 1), *j);
+    tmp = *i - 1;
+    if (g_miGong[tmp][*j] == 1) {
+        PushStack(s, tmp, *j);
+        FindNextPath(s, &tmp, j);
     }
-    if (g_miGong[*i + 1][*j] == 1) {
-        PushStack(s, (*i + 1), *j);
-        FindNextPath(s, (*i + 1), *j);
+    tmp = *i + 1;
+    if (g_miGong[tmp][*j] == 1) {
+        PushStack(s, tmp, *j);
+        FindNextPath(s, &tmp, j);
     }
-    if (g_miGong[*i][*j + 1] == 1) {
-        PushStack(s, *i, *j + 1);
-        FindNextPath(s, *i, *j + 1);
+    tmp = *j + 1;
+    if (g_miGong[*i][tmp] == 1) {
+        PushStack(s, *i, tmp);
+        FindNextPath(s, i, &tmp);
     }
-    if (g_miGong[*i][*j -1] == 1) {
-        PushStack(s, *i, *j - 1);
-        FindNextPath(s, *i, *j - 1);
+    tmp = *j - 1;
+    if (g_miGong[*i][tmp] == 1) {
+        PushStack(s, *i, tmp);
+        FindNextPath(s, i, &tmp);
     }
     PopStack(s);
 }
@@ -129,5 +138,9 @@ int main(void)
     //NewAMap();
     DrawTheMap();
     FindPath();
+    if (g_findPath == 0)
+        printf("no result");
+    else
+        printf("map finish");
     return 0;
 }
