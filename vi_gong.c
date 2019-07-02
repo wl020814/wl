@@ -3,8 +3,14 @@
 
 #define Row 6
 #define Column 6
-int g_miGong[Row][Column] = {0};
 
+int g_miGong[Row][Column] = {0, 0, 1, 0, 1, 0,
+                             1, 1, 1, 0, 1, 0,
+                             0, 0, 1, 0, 0, 1,
+                             0, 0, 1, 0, 0, 1,
+                             0, 0, 1, 0, 0, 1,
+                             0, 0, 1, 0, 0, 1,
+};
 
 struct Pos {
     int x;
@@ -14,29 +20,29 @@ struct Pos {
 struct Node {
     struct Pos pos;
     struct Node *next;
-}
+};
 
 struct Stack {
     struct Node *top;
     struct Node *bottom;
 };
 
-Stack NewStack(int i, int j)
+struct Stack* NewStack(int i, int j)
 {
-    struct Stack s;
-    struct Node *node = malloc(sizeof(Node));
+    struct Stack *s = malloc(sizeof(struct Stack));
+    struct Node *node = malloc(sizeof(struct Node));
     node->pos.x = i;
     node->pos.y = j;
     g_miGong[i][j] = 2;
-    node->next = null;
-    s.top = node;
-    s.bottom = node;
+    node->next = NULL;
+    s->top = node;
+    s->bottom = node;
     return s;
 }
 
-void PushStack(struct Stack s, int i, int j)
+void PushStack(struct Stack *s, int i, int j)
 {
-    struct Node *node = malloc(sizeof(Node));
+    struct Node *node = malloc(sizeof(struct Node));
     node->pos.x = i;
     node->pos.y = j;
     g_miGong[i][j] = 2;
@@ -44,7 +50,7 @@ void PushStack(struct Stack s, int i, int j)
     s->top = node;
 }
 
-void PopStack(struct Stack s)
+void PopStack(struct Stack *s)
 {
     struct Node *node = s->top;
     g_miGong[node->pos.x][node->pos.y] = 1;
@@ -74,30 +80,38 @@ void DrawTheMap(void)
     }
 }
 
-void FinNextPath(struct s, int *i, int *j)
+void FinNextPath(struct Stack *s, int *i, int *j);
+void FinNextPath(struct Stack *s, int *i, int *j)
 {
+    if (*i == (Row - 1)) {
+        printf("the result of map is:\n");
+        DrawTheMap();
+        return;
+    }
+
     if (g_miGong[*i - 1][*j] == 1) {
-        pushStack(s, (*i - 1), *j);
+        PushStack(s, (*i - 1), *j);
         FindNextPath(s, (*i - 1), *j);
     }
     if (g_miGong[*i + 1][*j] == 1) {
-        pushStack(s, (*i + 1), *j);
+        PushStack(s, (*i + 1), *j);
         FindNextPath(s, (*i + 1), *j);
     }
     if (g_miGong[*i][*j + 1] == 1) {
-        pushStack(s, *i, *j + 1);
+        PushStack(s, *i, *j + 1);
         FindNextPath(s, *i, *j + 1);
     }
     if (g_miGong[*i][*j -1] == 1) {
-        pushStack(s, *i, *j - 1);
+        PushStack(s, *i, *j - 1);
         FindNextPath(s, *i, *j - 1);
     }
+    PopStack(s);
 }
 
 void FindPath()
 {
     int i = 0, j = 0;
-    struct Stack s = {null, null};
+    struct Stack *s = NULL;
     for (j = 0; j < Column; j++) {
         if (g_miGong[i][j] == 1) {
             s = NewStack(i, j);
@@ -111,8 +125,9 @@ void FindPath()
 
 int main(void)
 {
-    Stack *path = null;
-    NewAMap();
+    //struct Stack *path = null;
+    //NewAMap();
     DrawTheMap();
+    FindPath();
     return 0;
 }
